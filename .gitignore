@@ -1,0 +1,4 @@
+deploy/
+firebase-debug.log
+.firebase/
+*service-account*.json

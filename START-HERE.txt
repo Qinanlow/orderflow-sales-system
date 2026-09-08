@@ -1,0 +1,10 @@
+第一次：
+1. 解壓本交付 ZIP。
+2. 把解壓後的全部內容上傳到 GitHub main 分支。
+3. 依 README.md 在 Firebase 開啟 Anonymous Auth、Firestore，並新增三個 GitHub 設定。
+4. 執行 GitHub Actions。
+
+以後更新：
+只需在 GitHub 以新版 site.zip 覆蓋舊檔，提交後會自動發布到 Firebase。
+
+切勿把 Firebase service account 私鑰放進 ZIP 或 GitHub 檔案；只能放在 GitHub Secret。

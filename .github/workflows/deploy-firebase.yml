@@ -1,0 +1,60 @@
+name: Deploy site.zip to Firebase
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site.zip"
+      - "firebase.json"
+      - "firestore.rules"
+      - "firestore.indexes.json"
+      - ".github/workflows/deploy-firebase.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: firebase-production
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract site.zip
+        run: |
+          rm -rf deploy
+          mkdir deploy
+          unzip -q site.zip -d deploy
+          test -f deploy/index.html
+
+      - name: Inject Firebase web configuration
+        env:
+          FIREBASE_WEB_CONFIG: ${{ secrets.FIREBASE_WEB_CONFIG }}
+        run: |
+          test -n "$FIREBASE_WEB_CONFIG"
+          node -e "require('fs').writeFileSync('deploy/firebase-config.js', 'export const firebaseConfig = ' + process.env.FIREBASE_WEB_CONFIG + ';\n')"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Prepare Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          test -n "$FIREBASE_SERVICE_ACCOUNT"
+          node -e "require('fs').writeFileSync(process.env.RUNNER_TEMP + '/firebase-service-account.json', process.env.FIREBASE_SERVICE_ACCOUNT)"
+
+      - name: Deploy Hosting and Firestore rules
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: |
+          test -n "$FIREBASE_PROJECT_ID"
+          npx --yes firebase-tools@15.29.0 deploy --project "$FIREBASE_PROJECT_ID" --only hosting,firestore --non-interactive
