@@ -1,15 +1,20 @@
-# OrderFlow — Firebase 銷售開單管理系統
+# Wura Sales Order & Invoicing System — Prototype
 
-這是一套純 HTML、CSS、JavaScript 的 Web 系統，使用 Firebase Hosting、Cloud Firestore 與 Anonymous Authentication。GitHub Actions 會在 `main` 分支的 `site.zip` 更新時自動解壓並部署。
+這是依照 Wura Electrical Appliances Retail Store 需求報告製作的純 HTML、CSS、JavaScript Web 原型，使用 Firebase Hosting、Cloud Firestore 與 Anonymous Authentication。GitHub Actions 會在 `main` 分支的 `site.zip` 更新時自動解壓並部署。
 
 ## 系統功能
 
-- 即時查看貨品售價與庫存
+- 英文／馬來文介面切換
+- 即時查看貨品售價、最低／最高允許售價與庫存
+- 銷售人員可在允許範圍內設定成交價；超出範圍時即時警告
 - 庫存不足提示及開單時二次校驗
 - 自動計算總額、建立銷售單、扣減庫存
-- 銷售單雲端存檔、搜尋與列印
+- 顧客與辦公室兩份單據、雲端存檔、搜尋與列印
+- 辦公與外勤部門庫存出入紀錄及即時更新
+- 銷售、發票、售出數量、庫存與熱門貨品管理報表
+- 銷售、辦公與外勤、經理三種原型權限檢視
 - 桌面與手機響應式界面
-- Firebase 未設定時自动进入本机示范模式
+- Firebase 未設定時自動進入本機示範模式
 
 ## 第一次設定（只做一次）
 
@@ -49,7 +54,7 @@
 
 - 绝对不要把 service account JSON 放进 repository 或 `site.zip`；它只能存放在 GitHub Secret。
 - Firebase Web config 会出现在浏览器前端，这是 Firebase 的正常设计；资料保护依赖 Authentication 与 Firestore Security Rules。
-- 当前版本采用 Anonymous Authentication，适合教程、原型或受控团队使用。若网址公开给大量陌生人，建议改为 Google／Email 登录并限制允许的帐号。
+- 目前的部門選擇器是原型權限示範，Anonymous Authentication 適合教程、原型或受控團隊使用。正式上線時應改為 Google／Email 登入，並以 Firebase Claims 或帳號資料落實伺服器端角色權限。
 - Spark 是免费方案，但仍受用量配额限制；请在 Firebase Console 查看使用量。
 
 ## 修改原始碼
